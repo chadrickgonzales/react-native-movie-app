@@ -2,6 +2,7 @@ import MovieCard from '@/components/MovieCard'
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
 import { fetchMovies } from "@/services/api"
+import { updateSearchCount } from '@/services/appwrite'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native'
 import SearchBar from '../../components/SearchBar'
@@ -13,16 +14,15 @@ const Search = () => {
   const [moviesLoading, setMoviesLoading] = useState(false);
   const [moviesError, setMoviesError] = useState<Error | null>(null);
 
-  // Debounce search query to avoid too many API calls
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery);
-    }, 500); // 500ms delay
+    }, 500); 
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch movies when debounced query changes
   useEffect(() => {
     const searchMovies = async () => {
       try {
@@ -30,6 +30,11 @@ const Search = () => {
         setMoviesError(null);
         const results = await fetchMovies({ query: debouncedQuery });
         setMovies(results);
+
+      
+        if (debouncedQuery.trim() && results.length > 0) {
+          await updateSearchCount(debouncedQuery, results[0]);
+        }
       } catch (error) {
         setMoviesError(error instanceof Error ? error : new Error('Failed to fetch movies'));
         setMovies([]);
