@@ -5,7 +5,6 @@ import { fetchMovies } from "@/services/api";
 import useFetch from "@/services/userFetch";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
-import SearchBar from "../../components/SearchBar";
 
 
 export default function Index() {
@@ -31,10 +30,7 @@ export default function Index() {
           <Text>Error: {moviesError?.message}</Text>
         ) : (
           <View className="flex-1 mt-5">
-        <SearchBar 
-          onPress={() => router.push("/search")}
-          placeholder="Search for a movie"
-        />
+        
 
         <>
           <Text className="text-lg text-white font-bold mt-5 mb-3">Latest Movies</Text>
