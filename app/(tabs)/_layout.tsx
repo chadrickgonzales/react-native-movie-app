@@ -1,6 +1,7 @@
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
 import { Tabs } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import React from 'react'
 import { Image, ImageBackground, Text, View, } from 'react-native'
 
@@ -37,7 +38,9 @@ const TabIcon = ({focused, icon, title}: any) => {
 
 const _layout = () => {
   return (
-    <Tabs
+    <>
+      <StatusBar hidden={true} />
+      <Tabs
       screenOptions={{
         tabBarShowLabel: false, 
         tabBarItemStyle: {
@@ -120,6 +123,7 @@ const _layout = () => {
                   }}
         />
     </Tabs>
+    </>
   )
 }
 

@@ -1,7 +1,7 @@
 import MovieCard from '@/components/MovieCard'
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
-import { fetchMovies } from "@/services/api"
+import { fetchMovies, fetchMoviesByCategory } from "@/services/api"
 import { updateSearchCount } from '@/services/appwrite'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native'
@@ -28,13 +28,20 @@ const Search = () => {
       try {
         setMoviesLoading(true);
         setMoviesError(null);
-        const results = await fetchMovies({ query: debouncedQuery });
-        setMovies(results);
-
-      
-        if (debouncedQuery.trim() && results.length > 0) {
-          await updateSearchCount(debouncedQuery, results[0]);
+        
+        let results;
+        if (debouncedQuery.trim()) {
+          // Search for specific movies
+          results = await fetchMovies({ query: debouncedQuery });
+          if (results.length > 0) {
+            await updateSearchCount(debouncedQuery, results[0]);
+          }
+        } else {
+          // Show popular movies when no search query
+          results = await fetchMoviesByCategory('popular');
         }
+        
+        setMovies(results);
       } catch (error) {
         setMoviesError(error instanceof Error ? error : new Error('Failed to fetch movies'));
         setMovies([]);
